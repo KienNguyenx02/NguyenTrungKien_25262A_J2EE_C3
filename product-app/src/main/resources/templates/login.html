@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đăng nhập hệ thống</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome (icon) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #4e73df, #224abe);
+            height: 100vh;
+        }
+
+        .login-card {
+            border-radius: 15px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #4e73df;
+        }
+
+        .btn-primary {
+            background-color: #4e73df;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group-text {
+            background-color: #f8f9fc;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card login-card shadow-lg p-4" style="width: 400px;">
+        
+        <h3 class="text-center mb-4 fw-bold text-primary">
+            <i class="fa-solid fa-user-lock"></i> Đăng Nhập
+        </h3>
+
+        <!-- Error -->
+        <div th:if="${param.error}" class="alert alert-danger text-center">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Sai tài khoản hoặc mật khẩu!
+        </div>
+
+        <!-- Logout -->
+        <div th:if="${param.logout}" class="alert alert-success text-center">
+            <i class="fa-solid fa-circle-check"></i>
+            Bạn đã đăng xuất thành công
+        </div>
+
+        <form th:action="@{/login}" method="post">
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label class="form-label">Tên đăng nhập</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    <input type="text" name="username" class="form-control"
+                           placeholder="Nhập username..." required>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label">Mật khẩu</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control"
+                           placeholder="Nhập mật khẩu..." required>
+                </div>
+            </div>
+
+            <!-- Remember me -->
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="remember-me">
+                <label class="form-check-label">
+                    Ghi nhớ đăng nhập
+                </label>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary w-100 fw-bold">
+                Đăng Nhập
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="mt-4 text-center">
+            <small class="text-muted">
+                Demo: admin / 123 | user / 123
+            </small>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
