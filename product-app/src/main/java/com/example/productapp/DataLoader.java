@@ -31,13 +31,13 @@ public class DataLoader implements CommandLineRunner {
             User admin = new User();
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("123"));
-            admin.setRole("ADMIN"); // Sẽ được load thành ROLE_ADMIN
+            admin.setRole("ADMIN"); // Thành ROLE_ADMIN khi nạp vào Spring Security
             userRepository.save(admin);
 
             User user = new User();
             user.setUsername("user");
             user.setPassword(passwordEncoder.encode("123"));
-            user.setRole("USER"); // Sẽ được load thành ROLE_USER
+            user.setRole("USER"); // Thành ROLE_USER khi nạp vào Spring Security
             userRepository.save(user);
         }
     }

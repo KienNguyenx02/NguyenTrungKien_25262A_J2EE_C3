@@ -4,6 +4,10 @@ import com.example.productapp.entity.Product;
 import com.example.productapp.repository.CategoryRepository;
 import com.example.productapp.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,8 +33,27 @@ public class ProductController {
     }
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("products", productService.getAll());
+    public String list(Model model, 
+                       @RequestParam(name = "keyword", defaultValue = "") String keyword,
+                       @RequestParam(name = "categoryId", required = false) Long categoryId,
+                       @RequestParam(name = "sort", defaultValue = "id,asc") String sort,
+                       @RequestParam(name = "page", defaultValue = "0") int page) {
+        
+        int size = 5; 
+        String[] sortParams = sort.split(",");
+        Sort sortObj = Sort.by(sortParams[1].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortParams[0]);
+        
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+        Page<Product> productPage = productService.searchAndFilter(categoryId, keyword, pageable);
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("sort", sort);
+        model.addAttribute("categories", categoryRepository.findAll());
+        
         return "product/list";
     }
 

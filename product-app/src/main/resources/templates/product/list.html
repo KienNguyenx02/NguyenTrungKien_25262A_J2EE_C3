@@ -6,7 +6,43 @@
 </head>
 <body class="container mt-5">
     <h2>Danh sách sản phẩm</h2>
-    <a href="/products/create" class="btn btn-primary mb-3">Thêm sản phẩm mới</a>
+    <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${message}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-2">
+            <a href="/products/create" class="btn btn-primary w-100 mb-1">Thêm mới</a>
+            <a href="/cart" class="btn btn-info w-100">🛒 Giỏ hàng</a>
+        </div>
+        <div class="col-md-10">
+            <form th:action="@{/products}" method="get" class="row g-2">
+                <div class="col-md-3">
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Tìm tên...">
+                </div>
+                <div class="col-md-3">
+                    <select name="categoryId" class="form-select">
+                        <option value="">Tất cả danh mục</option>
+                        <option th:each="cat : ${categories}" 
+                                th:value="${cat.id}" 
+                                th:text="${cat.name}"
+                                th:selected="${cat.id == categoryId}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="sort" class="form-select">
+                        <option value="id,asc" th:selected="${sort == 'id,asc'}">Mặc định</option>
+                        <option value="price,asc" th:selected="${sort == 'price,asc'}">Giá tăng dần</option>
+                        <option value="price,desc" th:selected="${sort == 'price,desc'}">Giá giảm dần</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex">
+                    <button type="submit" class="btn btn-outline-success w-100">Lọc</button>
+                    <a th:href="@{/products}" class="btn btn-outline-secondary ms-1">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -29,11 +65,29 @@
                 <td th:text="${p.price}"></td>
                 <td th:text="${p.category.name}"></td>
                 <td>
+                    <a th:href="@{'/cart/add/' + ${p.id}}" class="btn btn-success btn-sm">Thêm vào giỏ</a>
                     <a th:href="@{'/products/edit/' + ${p.id}}" class="btn btn-warning btn-sm">Sửa</a>
                     <a th:href="@{'/products/delete/' + ${p.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Xóa?')">Xóa</a>
                 </td>
             </tr>
         </tbody>
     </table>
+
+    <!-- Phân trang -->
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/products(page=${currentPage - 1}, keyword=${keyword}, categoryId=${categoryId}, sort=${sort})}">Previous</a>
+            </li>
+            
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/products(page=${i}, keyword=${keyword}, categoryId=${categoryId}, sort=${sort})}" th:text="${i + 1}">1</a>
+            </li>
+            
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/products(page=${currentPage + 1}, keyword=${keyword}, categoryId=${categoryId}, sort=${sort})}">Next</a>
+            </li>
+        </ul>
+    </nav>
 </body>
 </html>
